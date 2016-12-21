@@ -1,0 +1,25 @@
+{
+  "name": "retweet_bot",
+  "version": "1.0.0",
+  "description": "Hello everyone, this is a little bot made for @oversquadfr on Twitter for Retweet when a Streamer is online.",
+  "main": "index.js",
+  "dependencies": {
+    "twit": "^2.2.5"
+  },
+  "devDependencies": {
+    "underscore": "^1.8.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Meorne/retweet_bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Meorne/retweet_bot/issues"
+  },
+  "homepage": "https://github.com/Meorne/retweet_bot#readme"
+}
