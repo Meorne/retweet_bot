@@ -47,7 +47,7 @@ var req = ()=>{
 			});
 
 			//get twitter
-			streamerList = _.map(twitterAccountList, function(val){ 
+			streamerList = _.map(twitterAccountList, function(val){
 				return val.match(/http(?:s|):\/\/twitter.com\/([\w]+)[\S]*/)[1];
 			});
 
@@ -56,9 +56,11 @@ var req = ()=>{
 		});
 
 	});
+
 	request.on('error', (e) => {
 		console.log(`problem with request: ${e.message}`);
 	});
+
 	request.end();
 };
 
@@ -66,7 +68,6 @@ req();
 
 emiter.on('listStreamer',(streamerList)=>{
 	streamers = streamerList;
-	console.log(streamers);
 });
 
 setInterval(()=>{
@@ -100,8 +101,6 @@ var followingsUsers = [];
 T.get('followers/ids', { screen_name: userToCheckFollow },  function (err, data, response) {
 	followingsUsers = data.ids;
 })
-
-console.log(followingsUsers);
 
 var stream = T.stream('statuses/filter', { track: watcher });
 
