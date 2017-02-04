@@ -121,8 +121,11 @@ T.get('followers/ids', { screen_name: userToCheckFollow }, (err, data) => {
 const stream = T.stream('statuses/filter', { track: watcher });
 
 stream.on('tweet', (tweet) => {
-	// Test if the user who had tweeted is in the streamers list & if the 'userToCheckFollow' is following him
-	if (streamers && contains.call(streamers, tweet.user.screen_name) && contains.call(followingsUsers, tweet.user.id)) {
+	// Test if the user who had tweeted is in the streamers list
+	// & if the 'userToCheckFollow' is following him
+
+	if (streamers && contains.call(streamers, tweet.user.screen_name)
+	&& contains.call(followingsUsers, tweet.user.id)) {
 		// We RT his tweet
 		T.post('statuses/retweet/:id', { id: tweet.id_str }, () => {
 			console.log(`Just RT @${tweet.user.screen_name}`);
