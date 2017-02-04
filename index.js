@@ -1,4 +1,5 @@
 const http = require('http');
+const fs = require('fs');
 const Twit = require('twit');
 const _ = require('underscore');
 
@@ -7,6 +8,7 @@ class emitEvent extends EventEmitter {}
 
 
 const emiter = new emitEvent();
+const streamers = null;
 
 
 const request_options = {
@@ -66,14 +68,18 @@ var req = ()=>{
 
 req();
 
-emiter.on('listStreamer',(streamerList)=>{
-	streamers = streamerList;
-});
+
+
 
 setInterval(()=>{
 	req();
 },10*60000);
 
+const conf = JSON.parse(fs.readFileSync('conf-retweet.json','utf8'));
+
+emiter.on('listStreamer',(streamerList)=>{
+	streamers = streamerList;
+});
 
 // Load NPM LIB
 // JS function for looking in array and return true if users are in it
@@ -81,10 +87,10 @@ var contains = function(needle) {var findNaN = needle !== needle; var indexOf; i
 
 // Twiter Credentials (KEEP IT PRIVATE !)
 var T = new Twit({
-	consumer_key:         'v2Ork7YMGh2qnv9QgFccPZubr',
-	consumer_secret:      'ctnip4P0PF5G5qJuvV1s0XjXFLGBjVfBFbiNH6Pg7wDzGHLLk3',
-	access_token:         '710813713893343233-rpT4WQ1UnUIQcGEC6n5r8pHAM7uRuKQ',
-	access_token_secret:  'IaUYqz4Zb8SnZt0dXLEBPB6pTirghXZc4tZsPIw9ePQKp',
+	consumer_key:         conf.consumer_key,
+	consumer_secret:      conf.consumer_secret,
+	access_token:         conf.access_token,
+	access_token_secret:  conf.access_token_secret,
 	timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 })
 
@@ -107,7 +113,7 @@ var stream = T.stream('statuses/filter', { track: watcher });
 stream.on('tweet', function (tweet) {
 
 	// Test if the user who had tweeted is in the streamers list & if the 'userToCheckFollow' is following him
-	if ( contains.call(streamers, tweet.user.screen_name) && contains.call(followingsUsers, tweet.user.id)) {
+	if ( streamers && contains.call(streamers, tweet.user.screen_name) && contains.call(followingsUsers, tweet.user.id)) {
 
 		// We RT his tweet
 		T.post('statuses/retweet/:id', { id: tweet.id_str }, function (err, data, response) {

@@ -1,0 +1,10 @@
+{
+	"apps" : [
+		{
+			"name" : "retweet-bot",
+			"script" : "./index.js",
+			"watch" : true,
+			"ignore_watch" : ["node_modules"]
+		}
+	]
+}
