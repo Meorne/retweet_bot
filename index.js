@@ -5,6 +5,7 @@ const _ = require('underscore');
 const EventEmitter = require('events');
 
 class EmitEvent extends EventEmitter {}
+const conf = JSON.parse(fs.readFileSync('conf-retweet.json', 'utf8'));
 
 
 const emiter = new EmitEvent();
@@ -12,7 +13,7 @@ let streamers = null;
 
 
 const requestOptions = {
-	hostname: 'localhost',
+	hostname: conf.target_url,
 	port: 8080,
 	path: '/oversquad/rest/player/',
 	method: 'GET',
@@ -65,7 +66,6 @@ setInterval(() => {
 	req();
 }, 10 * 60000);
 
-const conf = JSON.parse(fs.readFileSync('conf-retweet.json', 'utf8'));
 
 emiter.on('listStreamer', (streamerList) => {
 	streamers = streamerList;
@@ -124,8 +124,7 @@ stream.on('tweet', (tweet) => {
 	// Test if the user who had tweeted is in the streamers list
 	// & if the 'userToCheckFollow' is following him
 
-	if (streamers && contains.call(streamers, tweet.user.screen_name)
-	&& contains.call(followingsUsers, tweet.user.id)) {
+	if (streamers && contains.call(streamers, tweet.user.screen_name)	&& contains.call(followingsUsers, tweet.user.id)) {
 		// We RT his tweet
 		T.post('statuses/retweet/:id', { id: tweet.id_str }, () => {
 			console.log(`Just RT @${tweet.user.screen_name}`);
