@@ -80,21 +80,14 @@ const T = new Twit({
 	timeout_ms: 60 * 1000,  // optional HTTP request timeout to apply to all requests.
 });
 
-// List of Twitter users who will be RT by the Bot
-
-// Mention for get RT
-const watcher = '@OversquadFR';
-
-// User to check following
-const userToCheckFollow = 'OversquadFR';
 let followingsUsers = [];
 
 // Store the IDS of the followings accounts
-T.get('followers/ids', { screen_name: userToCheckFollow }, (err, data) => {
+T.get('followers/ids', { screen_name: conf.userToCheckFollow }, (err, data) => {
 	followingsUsers = data.ids;
 });
 
-const stream = T.stream('statuses/filter', { track: watcher });
+const stream = T.stream('statuses/filter', { track: conf.watcher });
 
 stream.on('tweet', (tweet) => {
 	// Test if the user who had tweeted is in the streamers list

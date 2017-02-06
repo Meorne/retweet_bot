@@ -3,5 +3,7 @@
 	"consumer_secret": "",
 	"access_token": "",
 	"access_token_secret": "",
-	"target_url": ""
+	"target_url": "",
+	"watcher" : "",
+	"userToCheckFollow" : ""
 }
