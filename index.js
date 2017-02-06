@@ -71,30 +71,6 @@ emiter.on('listStreamer', (streamerList) => {
 	streamers = streamerList;
 });
 
-// Load NPM LIB
-// JS function for looking in array and return true if users are in it
-const contains = (needles) => {
-	const findNaN = isNaN(needles);
-	let indexOf;
-	if (!findNaN && typeof Array.prototype.indexOf === 'function') {
-		indexOf = Array.prototype.indexOf;
-	} else {
-		indexOf = (needle) => {
-			let i = -1;
-			let index = -1;
-			for (i = 0; i < this.length; i += 1) {
-				const item = this[i];
-				if ((findNaN && isNaN(item)) || item === needle) {
-					index = i;
-					break;
-				}
-			}
-			return index;
-		};
-	}
-	return indexOf.call(this, needles) > -1;
-};
-
 // Twiter Credentials (KEEP IT PRIVATE !)
 const T = new Twit({
 	consumer_key: conf.consumer_key,
@@ -124,7 +100,7 @@ stream.on('tweet', (tweet) => {
 	// Test if the user who had tweeted is in the streamers list
 	// & if the 'userToCheckFollow' is following him
 
-	if (streamers && contains.call(streamers, tweet.user.screen_name)	&& contains.call(followingsUsers, tweet.user.id)) {
+	if (_.contains(streamers, tweet.user.screen_name)	&& _.contains(followingsUsers, tweet.user.id)) {
 		// We RT his tweet
 		T.post('statuses/retweet/:id', { id: tweet.id_str }, () => {
 			console.log(`Just RT @${tweet.user.screen_name}`);
