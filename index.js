@@ -46,7 +46,7 @@ function req() {
 			});
 
 			// get twitter
-			streamerList = _.map(twitterAccountList, val => val.match(/http(?:s|):\/\/twitter.com\/([\w]+)[\S]*/)[1]);
+			streamerList = _.map(twitterAccountList, val => val.match(/http(?:s|):\/\/twitter.com\/([\w]+)[\S]*/)[1].toLowerCase());
 
 			emiter.emit('listStreamer', streamerList);
 		});
@@ -93,7 +93,7 @@ stream.on('tweet', (tweet) => {
 	// Test if the user who had tweeted is in the streamers list
 	// & if the 'userToCheckFollow' is following him
 
-	if (_.indexOf(streamers, tweet.user.screen_name) >= 0
+	if (_.indexOf(streamers, tweet.user.screen_name.toLowerCase()) >= 0
 	&& _.indexOf(followingsUsers, tweet.user.id) >= 0) {
 		// We RT his tweet
 		T.post('statuses/retweet/:id', { id: tweet.id_str }, () => {
