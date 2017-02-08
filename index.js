@@ -36,6 +36,13 @@ function req() {
 
 		// on request ended get twitter name list
 		res.on('end', () => {
+			try {
+				JSON.parse(dataResult);
+			} catch (e) {
+				console.error(`error ${e} in ${dataResult}`);
+				req();
+				return false;
+			}
 			const jsonResult = JSON.parse(dataResult);
 			let twitterAccountList = [];
 			jsonResult.forEach((data) => {
@@ -49,6 +56,8 @@ function req() {
 			streamerList = _.map(twitterAccountList, val => val.match(/http(?:s|):\/\/twitter.com\/([\w]+)[\S]*/)[1].toLowerCase());
 
 			emiter.emit('listStreamer', streamerList);
+
+			return streamerList;
 		});
 	});
 
