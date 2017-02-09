@@ -5,7 +5,8 @@ const _ = require('underscore');
 const EventEmitter = require('events');
 
 class EmitEvent extends EventEmitter {}
-const conf = JSON.parse(fs.readFileSync('conf-retweet.json', 'utf8'));
+const getConf = fs.readFileSync('conf-retweet.json', 'utf8');
+const conf = JSON.parse(getConf);
 
 
 const emiter = new EmitEvent();
@@ -101,7 +102,6 @@ const stream = T.stream('statuses/filter', { track: conf.watcher });
 stream.on('tweet', (tweet) => {
 	// Test if the user who had tweeted is in the streamers list
 	// & if the 'userToCheckFollow' is following him
-
 	if (_.indexOf(streamers, tweet.user.screen_name.toLowerCase()) >= 0
 	&& _.indexOf(followingsUsers, tweet.user.id) >= 0) {
 		// We RT his tweet
