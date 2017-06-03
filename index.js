@@ -103,7 +103,7 @@ stream.on('tweet', (tweet) => {
 	// Test if the user who had tweeted is in the streamers list
 	// & if the 'userToCheckFollow' is following him
 	if (_.indexOf(streamers, tweet.user.screen_name.toLowerCase()) >= 0
-	&& _.indexOf(followingsUsers, tweet.user.id) >= 0) {
+	&& _.indexOf(followingsUsers, tweet.user.id) >= 0 && !tweet.in_reply_to_status_id_str) {
 		// We RT his tweet
 		T.post('statuses/retweet/:id', { id: tweet.id_str }, () => {
 			console.log(`Just RT @${tweet.user.screen_name}`);
