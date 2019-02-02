@@ -1,8 +1,13 @@
 const http = require('http');
 const fs = require('fs');
 const Twit = require('twit');
-const _ = require('underscore');
 const EventEmitter = require('events');
+
+const _ = {};
+_.indexOf = require('lodash/indexOf');
+_.filter = require('lodash/filter');
+_.intersection = require('lodash/intersection');
+_.union = require('lodash/union');
 
 class EmitEvent extends EventEmitter {}
 const getConf = fs.readFileSync('conf-retweet.json', 'utf8');
@@ -48,13 +53,13 @@ function req() {
 			let twitterAccountList = [];
 			jsonResult.forEach((data) => {
 				// list twitter acount url
-				const twitterUrlList = _.filter(data.mapNetworks, val => (/twitter/i).test(val));
+				const twitterUrlList = _.filter(data.mapNetworks, (val, i) => (/twitter/i).test(i));
 
 				twitterAccountList = _.union(twitterAccountList, twitterUrlList);
 			});
 
 			// get twitter
-			streamerList = _.map(twitterAccountList, val => val.match(/http(?:s|):\/\/twitter.com\/([\w]+)[\S]*/)[1].toLowerCase());
+			streamerList = twitterAccountList.map(val => val.match(/http(?:s|):\/\/twitter.com\/([\w]+)[\S]*/)[1]);
 
 			emiter.emit('listStreamer', streamerList);
 
@@ -90,20 +95,25 @@ const T = new Twit({
 	timeout_ms: 60 * 1000,  // optional HTTP request timeout to apply to all requests.
 });
 
-let followingsUsers = [];
+// let followingsUsers = [];
 
 // Store the IDS of the followings accounts
-T.get('followers/ids', { screen_name: conf.userToCheckFollow }, (err, data) => {
-	followingsUsers = data.ids;
-});
-
+// T.get('friends/list', { screen_name: conf.userToCheckFollow }, (err, data) => {
+// 	if (!err && data && data.users) {
+// 		followingsUsers = data.users.map(e => e.screen_name);
+// 		console.log(followingsUsers, _.intersection(followingsUsers, streamers));
+// 	} else if (err.allErrors) {
+// 		console.error(err.allErrors);
+// 	}
+// });
 const stream = T.stream('statuses/filter', { track: conf.watcher });
 
 stream.on('tweet', (tweet) => {
 	// Test if the user who had tweeted is in the streamers list
 	// & if the 'userToCheckFollow' is following him
-	if (_.indexOf(streamers, tweet.user.screen_name.toLowerCase()) >= 0
-	&& _.indexOf(followingsUsers, tweet.user.id) >= 0 && !tweet.in_reply_to_status_id_str) {
+  // temporary anavailable
+	// const availableStreamer = _.intersection(followingsUsers, streamers);
+	if (_.indexOf(streamers, tweet.user.screen_name) >= 0) {
 		// We RT his tweet
 		T.post('statuses/retweet/:id', { id: tweet.id_str }, () => {
 			console.log(`Just RT @${tweet.user.screen_name}`);
